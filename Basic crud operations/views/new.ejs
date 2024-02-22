@@ -1,0 +1,32 @@
+<% layout("./layout/boilerplate.ejs") %>
+
+<!--------------------------------------------------------->
+<h1>Create New Post</h1>
+
+<form action="/posts" method="post" class="new_form">
+  <div class="field">
+    <label for="username">Username</label>
+    <input
+      type="text"
+      name="username"
+      id="username"
+      autocomplete="off"
+      required
+    />
+  </div>
+  <div class="field">
+    <label for="content">Content</label>
+    <textarea
+      type="text"
+      name="content"
+      rows="5"
+      id="content"
+      autocomplete="off"
+      required
+    ></textarea>
+  </div>
+  <button type="submit">Create Post</button>
+</form>
+
+<!--------------------------------------------------------->
+<a href="/posts" class="back">Back to posts</a>

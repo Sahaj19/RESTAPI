@@ -1,0 +1,18 @@
+<% layout("./layout/boilerplate.ejs") %>
+
+<!--------------------------------------------------------->
+<h1>Blog Posts</h1>
+
+<% posts.forEach((post) => { %>
+<div class="particular_post">
+  <p><strong>Username : </strong><%= post.username %></p>
+  <p><strong>Content : </strong><%= post.content %></p>
+  <a href="/posts/<%= post.id %>" class="show_post">Show full post</a>
+  <a href="/posts/<%= post.id %>/edit" class="edit_post">Edit post</a>
+  <form action="/posts/<%= post.id %>?_method=DELETE" method="post">
+    <button class="del_btn">Delete post</button>
+  </form>
+</div>
+<% }) %>
+
+<a href="/posts/new" class="create_post">Create new post</a>

@@ -1,0 +1,40 @@
+
+.particular_post {
+    box-shadow: 0 0 2px 2px #fff;
+    color: #000;
+    padding: 1rem;
+    margin: 2rem 0;
+}
+
+.particular_post p {
+    font-size: 1.75rem;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.show_post ,
+.edit_post {
+    font-size: 1.25rem;
+    color: #fff;
+    margin: 1rem 0;
+    display: block;
+    opacity: 0.6;
+}
+
+.del_btn {
+    background-color: red;
+    color: #000;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.create_post {
+    font-size: 2rem;
+    color: #fff;
+    display: block;
+    margin: 3rem 0;
+}
