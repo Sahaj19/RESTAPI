@@ -1,0 +1,40 @@
+.edit_form {
+    margin: 3rem auto;
+    max-width: 500px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+.field label {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.field textarea ,
+.field input{
+    padding: 1rem;
+    font-size: 1.5rem;
+    border-radius: 1rem;
+    outline: none;
+    border: none;
+}
+
+.edit_form button {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    background-color: green;
+    color: #fff;
+    border: none;
+    outline: none;
+    border-radius: 1rem;
+    padding: 1rem;
+    cursor: pointer;
+}

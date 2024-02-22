@@ -1,3 +1,12 @@
 <% layout("./layout/boilerplate.ejs") %>
 
 <!--------------------------------------------------------->
+<h1>Particular Post</h1>
+
+<div class="show_post">
+  <p><strong>Username : </strong><%= post[0].username %></p>
+  <p><strong>Content : </strong><%= post[0].content %></p>
+</div>
+
+<!--------------------------------------------------------->
+<a href="/posts" class="back">Back to posts</a>

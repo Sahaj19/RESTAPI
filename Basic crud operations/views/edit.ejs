@@ -1,3 +1,39 @@
 <% layout("./layout/boilerplate.ejs") %>
 
 <!--------------------------------------------------------->
+<h1>Edit your Post</h1>
+
+<form
+  action="/posts/<%= post[0].id %>?_method=PUT"
+  method="post"
+  class="edit_form"
+>
+  <div class="field">
+    <label for="username">Username</label>
+    <input
+      type="text"
+      name="username"
+      value="<%= post[0].username %>"
+      id="username"
+      autocomplete="off"
+      required
+    />
+  </div>
+  <div class="field">
+    <label for="content">Content</label>
+    <textarea
+      type="text"
+      name="content"
+      rows="5"
+      id="content"
+      autocomplete="off"
+      required
+    >
+<%= post[0].content %></textarea
+    >
+  </div>
+  <button type="submit">Edit Post</button>
+</form>
+
+<!--------------------------------------------------------->
+<a href="/posts" class="back">Back to posts</a>
