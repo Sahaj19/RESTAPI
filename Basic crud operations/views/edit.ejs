@@ -4,7 +4,7 @@
 <h1>Edit your Post</h1>
 
 <form
-  action="/posts/<%= post[0].id %>?_method=PUT"
+  action="/posts/<%= post.id %>?_method=PUT"
   method="post"
   class="edit_form"
 >
@@ -13,7 +13,7 @@
     <input
       type="text"
       name="username"
-      value="<%= post[0].username %>"
+      value="<%= post.username %>"
       id="username"
       autocomplete="off"
       required
@@ -29,7 +29,7 @@
       autocomplete="off"
       required
     >
-<%= post[0].content %></textarea
+<%= post.content %></textarea
     >
   </div>
   <button type="submit">Edit Post</button>

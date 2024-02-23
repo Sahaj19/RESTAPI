@@ -5,7 +5,7 @@ const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 const { v4: uuidv4 } = require("uuid");
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
@@ -13,7 +13,16 @@ app.set("view engine", "ejs");
 app.engine("ejs", ejsMate);
 app.set("views", path.join(__dirname, "views"));
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+class ExpressError extends Error {
+  constructor(status, message) {
+    super();
+    this.status = status;
+    this.message = message;
+  }
+}
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 let posts = [
   {
     id: uuidv4(),
@@ -27,19 +36,19 @@ let posts = [
   },
 ];
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //(Home page)
 app.get("/", (req, res) => {
   res.send(`<h1>Basic Crud Blog App</h1>`);
 });
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //(Index route)
 app.get("/posts", (req, res) => {
   res.render("index.ejs", { posts });
 });
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //(new route)
 app.get("/posts/new", (req, res) => {
   res.render("new.ejs");
@@ -53,59 +62,82 @@ app.post("/posts", (req, res) => {
   res.redirect("/posts");
 });
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //(show route)
-app.get("/posts/:id", (req, res) => {
-  let { id } = req.params;
-  let post = posts.filter((post) => {
-    return post.id === id;
-  });
-  res.render("show.ejs", { post });
+app.get("/posts/:id", (req, res, next) => {
+  try {
+    let { id } = req.params;
+
+    if (!id) {
+      return next(new ExpressError(404, "Invalid ID"));
+    }
+
+    const post = posts.find((post) => post.id === id);
+
+    if (!post) {
+      return next(new ExpressError(404, "Post not found!"));
+    }
+    res.render("show.ejs", { post });
+  } catch (error) {
+    next(error);
+  }
 });
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //(Edit route)
-app.get("/posts/:id/edit", (req, res) => {
-  let { id } = req.params;
-  let post = posts.filter((post) => {
-    return post.id === id;
-  });
-  res.render("edit.ejs", { post });
+app.get("/posts/:id/edit", (req, res, next) => {
+  try {
+    let { id } = req.params;
+    if (!id) {
+      return next(
+        new ExpressError(404, "Edit page not found (i.e post doesn't exist)")
+      );
+    }
+
+    const post = posts.find((post) => post.id === id);
+    if (!post) {
+      return next(
+        new ExpressError(404, "Edit page not found (i.e post doesn't exist)")
+      );
+    }
+
+    res.render("edit.ejs", { post });
+  } catch (error) {
+    next(error);
+  }
 });
 
 //(update route)
 app.put("/posts/:id", (req, res) => {
   let { id } = req.params;
   let { username, content } = req.body;
-  let post = posts.filter((post) => {
-    return post.id === id;
-  });
-  post[0].username = username;
-  post[0].content = content;
+  const post = posts.find((post) => post.id === id);
+  post.username = username;
+  post.content = content;
   res.redirect(`/posts/${id}`);
 });
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //(Delete route)
 app.delete("/posts/:id", (req, res) => {
   let { id } = req.params;
-
-  //it will return something like [{post details}]
-  let post = posts.filter((post) => {
-    return post.id === id;
+  posts = posts.filter((post) => {
+    return post.id !== id;
   });
-
-  //let's grab the index of our required post
-  let requiredIndex = posts.indexOf(post[0]);
-  if (requiredIndex != -1) {
-    posts.splice(requiredIndex, 1); //it will remove the entire post object
-  } else {
-    throw new Error("post does't exist");
-  }
   res.redirect("/posts");
 });
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+app.all("*", (req, res, next) => {
+  next(new ExpressError(404, "Page not found"));
+});
+
+app.use((err, req, res, next) => {
+  let { status = 500, message = "Something Went Wrong" } = err;
+  res.status(status).send(message);
+});
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 app.listen(3000, function () {
   console.log("server is active on port http://localhost:3000");
 });
