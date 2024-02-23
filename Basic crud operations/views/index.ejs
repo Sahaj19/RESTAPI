@@ -16,3 +16,17 @@
 <% }) %>
 
 <a href="/posts/new" class="create_post">Create new post</a>
+
+<!--------------------------------------------------------->
+<script>
+  const deleteButtons = document.querySelectorAll(".del_btn");
+  deleteButtons.forEach((btn) => {
+    btn.addEventListener("click", (event) => {
+      event.preventDefault();
+      let popup = confirm("Are you sure you want to delete this post?");
+      if (popup) {
+        btn.closest("form").submit();
+      }
+    });
+  });
+</script>
