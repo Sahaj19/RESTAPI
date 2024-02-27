@@ -1,0 +1,16 @@
+{
+  "name": "express-with-mongodb",
+  "version": "1.0.0",
+  "description": "express with mongodb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sahaj",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "mongoose": "^8.2.0"
+  }
+}
