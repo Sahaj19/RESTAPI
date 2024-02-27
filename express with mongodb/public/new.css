@@ -1,0 +1,44 @@
+.new_form {
+    margin: 2rem auto;
+    max-width: 500px;
+}
+
+.form_div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+}
+
+.form_div label ,
+.form_div input {
+    font-size: 1.5rem;
+}
+
+.form_div input {
+    padding: 0.5rem;
+    outline: none;
+}
+
+.form_div_radio {
+    margin-bottom: 1.5rem;
+}
+
+.form_div_radio label ,
+.form_div_radio input {
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+
+
+.new_form button {
+    width: 100%;
+    border : none;
+    outline: none;
+    background-color: steelblue;
+    color: #fff;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 0.5rem;
+}

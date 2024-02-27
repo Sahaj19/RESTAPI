@@ -28,15 +28,43 @@ app.set("views", path.join(__dirname, "views"));
 app.use(methodOverride("_method"));
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//(home route)
 app.get("/", (req, res) => {
-  res.send(
-    `<h1>
-      Welcome to RESTAPI tutorial <br /> Express with MongoDB
-    </h1>`
-  );
+  res.render("home.ejs");
 });
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//(index route)
+app.get("/books", async (req, res) => {
+  let allBooks = await Book.find({});
+  res.render("index.ejs", { allBooks });
+});
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//(new route)
+app.get("/books/new", (req, res) => {
+  res.render("new.ejs");
+});
+
+//(post route)
+app.post("/books", async (req, res) => {
+  let book = new Book(req.body.book);
+  console.log(book);
+  await book.save();
+  res.redirect("/books");
+});
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//(show route)
+app.get("/books/:id", async (req, res) => {
+  try {
+    let { id } = req.params;
+    let book = await Book.findById(id);
+    res.render("show.ejs", { book });
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 app.listen(3000, function () {

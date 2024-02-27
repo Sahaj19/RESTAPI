@@ -1,0 +1,41 @@
+<% layout("layout/boilerplate.ejs") %>
+
+<!----------------------------------------------------------------->
+<h1>Create New Book Data</h1>
+
+<form action="/books" method="post" class="new_form">
+  <div class="form_div">
+    <label for="title">Title</label>
+    <input type="text" id="title" name="book[title]" required />
+  </div>
+  <div class="form_div">
+    <label for="author">Author</label>
+    <input type="text" id="author" name="book[author]" required />
+  </div>
+  <div class="form_div">
+    <label for="price">Price</label>
+    <input type="text" id="price" name="book[price]" required />
+  </div>
+  <div class="form_div_radio">
+    <label>Category</label><br />
+    <input
+      type="radio"
+      id="fiction"
+      name="book[category]"
+      value="fiction"
+      required
+    />
+    <label for="fiction">Fiction</label><br />
+    <input
+      type="radio"
+      id="non-fiction"
+      name="book[category]"
+      value="non-fiction"
+    />
+    <label for="non-fiction">Non-Fiction</label>
+  </div>
+  <button type="submit">Add my book!</button>
+</form>
+
+<!----------------------------------------------------------------->
+<a href="/books" class="back_to_books">Back to books data</a>

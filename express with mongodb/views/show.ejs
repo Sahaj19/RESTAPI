@@ -1,0 +1,22 @@
+<% layout("layout/boilerplate.ejs") %>
+
+<!----------------------------------------------------------------->
+<h1>Books Data</h1>
+
+<div class="book_info">
+  <p><strong>Title : </strong><%= book.title %></p>
+  <p><strong>Author : </strong><%= book.author %></p>
+  <p><strong>Price : </strong><%= book.price %></p>
+  <p><strong>Category : </strong><%= book.category %></p>
+  <div class="btns">
+    <form action="/books/<%= book._id %>/edit" method="get">
+      <button type="submit">Edit book details</button>
+    </form>
+    <form action="/books/<%= book._id %>?_method=DELETE" method="get">
+      <button type="submit">Delete book details</button>
+    </form>
+  </div>
+</div>
+
+<!----------------------------------------------------------------->
+<a href="/books" class="back_to_books">Back to books data</a>
