@@ -4,6 +4,8 @@ const app = express();
 const path = require("path");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
+const ExpressError = require("./utils/expressError.js");
+const wrapAsync = require("./utils/wrapAsync.js");
 const Book = require("./models/book.js");
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -35,10 +37,13 @@ app.get("/", (req, res) => {
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //(index route)
-app.get("/books", async (req, res) => {
-  let allBooks = await Book.find({});
-  res.render("index.ejs", { allBooks });
-});
+app.get(
+  "/books",
+  wrapAsync(async (req, res) => {
+    let allBooks = await Book.find({});
+    res.render("index.ejs", { allBooks });
+  })
+);
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //(new route)
@@ -47,50 +52,108 @@ app.get("/books/new", (req, res) => {
 });
 
 //(post route)
-app.post("/books", async (req, res) => {
-  let book = new Book(req.body.book);
-  console.log(book);
-  await book.save();
-  res.redirect("/books");
-});
+app.post(
+  "/books",
+  wrapAsync(async (req, res) => {
+    let book = new Book(req.body.book);
+    console.log(book);
+    await book.save();
+    res.redirect("/books");
+  })
+);
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //(show route)
-app.get("/books/:id", async (req, res) => {
-  try {
-    let { id } = req.params;
-    let book = await Book.findById(id);
-    res.render("show.ejs", { book });
-  } catch (error) {
-    console.log(error);
-  }
-});
+app.get(
+  "/books/:id",
+  wrapAsync(async (req, res, next) => {
+    try {
+      let { id } = req.params;
+
+      if (!id) {
+        return next(new ExpressError(404, "Book ID is missing!"));
+      }
+
+      let book = await Book.findById(id);
+
+      if (!book) {
+        return next(new ExpressError(404, "Book Data Don't Exist!"));
+      }
+
+      res.render("show.ejs", { book });
+    } catch (error) {
+      next(error);
+    }
+  })
+);
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //(edit route)
-app.get("/books/:id/edit", async (req, res) => {
-  let { id } = req.params;
-  let book = await Book.findById(id);
-  res.render("edit.ejs", { book });
-});
+app.get(
+  "/books/:id/edit",
+  wrapAsync(async (req, res, next) => {
+    try {
+      let { id } = req.params;
+
+      if (!id) {
+        return next(new ExpressError(404, "Book ID is missing!"));
+      }
+
+      let book = await Book.findById(id);
+
+      if (!book) {
+        return next(new ExpressError(404, "Book Data Don't Exist!"));
+      }
+
+      res.render("edit.ejs", { book });
+    } catch (error) {
+      next(error);
+    }
+  })
+);
 
 //(update route)
-app.put("/books/:id", async (req, res) => {
-  let { id } = req.params;
-  await Book.findByIdAndUpdate(
-    id,
-    { ...req.body.book },
-    { runValidators: true }
-  );
-  res.redirect(`/books/${id}`);
-});
+app.put(
+  "/books/:id",
+  wrapAsync(async (req, res) => {
+    let { id } = req.params;
+    await Book.findByIdAndUpdate(
+      id,
+      { ...req.body.book },
+      { runValidators: true }
+    );
+    res.redirect(`/books/${id}`);
+  })
+);
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //(delete route)
-app.delete("/books/:id", async (req, res) => {
-  let { id } = req.params;
-  await Book.findByIdAndDelete(id);
-  res.redirect("/books");
+app.delete(
+  "/books/:id",
+  wrapAsync(async (req, res) => {
+    let { id } = req.params;
+    await Book.findByIdAndDelete(id);
+    res.redirect("/books");
+  })
+);
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//(error handling middlewares)
+app.all("*", (req, res, next) => {
+  next(new ExpressError(404, "Page not found!"));
+});
+
+app.use((err, req, res, next) => {
+  if (err instanceof mongoose.CastError) {
+    next(new ExpressError(404, "Book Data Don't exist!"));
+  } else {
+    next(err);
+  }
+});
+
+app.use((error, req, res, next) => {
+  let { status = 500, message = "something went wrong, try again!" } = error;
+  res.status(status).send(message);
 });
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
