@@ -67,6 +67,33 @@ app.get("/books/:id", async (req, res) => {
 });
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//(edit route)
+app.get("/books/:id/edit", async (req, res) => {
+  let { id } = req.params;
+  let book = await Book.findById(id);
+  res.render("edit.ejs", { book });
+});
+
+//(update route)
+app.put("/books/:id", async (req, res) => {
+  let { id } = req.params;
+  await Book.findByIdAndUpdate(
+    id,
+    { ...req.body.book },
+    { runValidators: true }
+  );
+  res.redirect(`/books/${id}`);
+});
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//(delete route)
+app.delete("/books/:id", async (req, res) => {
+  let { id } = req.params;
+  await Book.findByIdAndDelete(id);
+  res.redirect("/books");
+});
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 app.listen(3000, function () {
   console.log("server is active on http://localhost:3000");
 });
